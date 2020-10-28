@@ -191,17 +191,17 @@ public class Utility {
     public static int getIconForFileType(FileType type) {
         switch (type) {
             case MUSIC:
-                return R.drawable.music;
+                return R.drawable.ic_headset_white_24dp;
             default:
             case VIDEO:
-                return R.drawable.video;
+                return R.drawable.ic_movie_white_24dp;
             case SUBTITLE:
-                return R.drawable.subtitle;
+                return R.drawable.ic_subtitles_white_24dp;
         }
     }
 
     public static void copyToClipboard(Context context, String str) {
-        ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager cm = ContextCompat.getSystemService(context, ClipboardManager.class);
 
         if (cm == null) {
             Toast.makeText(context, R.string.permission_denied, Toast.LENGTH_LONG).show();

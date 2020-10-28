@@ -20,8 +20,9 @@ package org.schabi.newpipe.local.history;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import org.schabi.newpipe.NewPipeDatabase;
 import org.schabi.newpipe.R;
@@ -55,7 +56,6 @@ import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 public class HistoryRecordManager {
-
     private final AppDatabase database;
     private final StreamDAO streamTable;
     private final StreamHistoryDAO streamHistoryTable;
@@ -81,12 +81,14 @@ public class HistoryRecordManager {
     ///////////////////////////////////////////////////////
 
     public Maybe<Long> onViewed(final StreamInfo info) {
-        if (!isStreamHistoryEnabled()) return Maybe.empty();
+        if (!isStreamHistoryEnabled()) {
+            return Maybe.empty();
+        }
 
         final Date currentTime = new Date();
         return Maybe.fromCallable(() -> database.runInTransaction(() -> {
             final long streamId = streamTable.upsert(new StreamEntity(info));
-            StreamHistoryEntity latestEntry = streamHistoryTable.getLatestEntry(streamId);
+            final StreamHistoryEntity latestEntry = streamHistoryTable.getLatestEntry(streamId);
 
             if (latestEntry != null) {
                 streamHistoryTable.delete(latestEntry);
@@ -99,9 +101,11 @@ public class HistoryRecordManager {
         })).subscribeOn(Schedulers.io());
     }
 
-    public Single<Integer> deleteStreamHistory(final long streamId) {
-        return Single.fromCallable(() -> streamHistoryTable.deleteStreamHistory(streamId))
-                .subscribeOn(Schedulers.io());
+    public Completable deleteStreamHistoryAndState(final long streamId) {
+        return Completable.fromAction(() -> {
+            streamStateTable.deleteState(streamId);
+            streamHistoryTable.deleteStreamHistory(streamId);
+        }).subscribeOn(Schedulers.io());
     }
 
     public Single<Integer> deleteWholeStreamHistory() {
@@ -109,7 +113,7 @@ public class HistoryRecordManager {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Single<Integer> deleteCompelteStreamStateHistory() {
+    public Single<Integer> deleteCompleteStreamStateHistory() {
         return Single.fromCallable(streamStateTable::deleteAll)
                 .subscribeOn(Schedulers.io());
     }
@@ -118,12 +122,16 @@ public class HistoryRecordManager {
         return streamHistoryTable.getHistory().subscribeOn(Schedulers.io());
     }
 
+    public Flowable<List<StreamHistoryEntry>> getStreamHistorySortedById() {
+        return streamHistoryTable.getHistorySortedById().subscribeOn(Schedulers.io());
+    }
+
     public Flowable<List<StreamStatisticsEntry>> getStreamStatistics() {
         return streamHistoryTable.getStatistics().subscribeOn(Schedulers.io());
     }
 
     public Single<List<Long>> insertStreamHistory(final Collection<StreamHistoryEntry> entries) {
-        List<StreamHistoryEntity> entities = new ArrayList<>(entries.size());
+        final List<StreamHistoryEntity> entities = new ArrayList<>(entries.size());
         for (final StreamHistoryEntry entry : entries) {
             entities.add(entry.toStreamHistoryEntity());
         }
@@ -132,7 +140,7 @@ public class HistoryRecordManager {
     }
 
     public Single<Integer> deleteStreamHistory(final Collection<StreamHistoryEntry> entries) {
-        List<StreamHistoryEntity> entities = new ArrayList<>(entries.size());
+        final List<StreamHistoryEntity> entities = new ArrayList<>(entries.size());
         for (final StreamHistoryEntry entry : entries) {
             entities.add(entry.toStreamHistoryEntity());
         }
@@ -149,13 +157,15 @@ public class HistoryRecordManager {
     ///////////////////////////////////////////////////////
 
     public Maybe<Long> onSearched(final int serviceId, final String search) {
-        if (!isSearchHistoryEnabled()) return Maybe.empty();
+        if (!isSearchHistoryEnabled()) {
+            return Maybe.empty();
+        }
 
         final Date currentTime = new Date();
         final SearchHistoryEntry newEntry = new SearchHistoryEntry(currentTime, serviceId, search);
 
         return Maybe.fromCallable(() -> database.runInTransaction(() -> {
-            SearchHistoryEntry latestEntry = searchHistoryTable.getLatestEntry();
+            final SearchHistoryEntry latestEntry = searchHistoryTable.getLatestEntry();
             if (latestEntry != null && latestEntry.hasEqualValues(newEntry)) {
                 latestEntry.setCreationDate(currentTime);
                 return (long) searchHistoryTable.update(latestEntry);
@@ -231,11 +241,13 @@ public class HistoryRecordManager {
 
     public Single<StreamStateEntity[]> loadStreamState(final InfoItem info) {
         return Single.fromCallable(() -> {
-            final List<StreamEntity> entities = streamTable.getStream(info.getServiceId(), info.getUrl()).blockingFirst();
+            final List<StreamEntity> entities = streamTable
+                    .getStream(info.getServiceId(), info.getUrl()).blockingFirst();
             if (entities.isEmpty()) {
                 return new StreamStateEntity[]{null};
             }
-            final List<StreamStateEntity> states = streamStateTable.getState(entities.get(0).getUid()).blockingFirst();
+            final List<StreamStateEntity> states = streamStateTable
+                    .getState(entities.get(0).getUid()).blockingFirst();
             if (states.isEmpty()) {
                 return new StreamStateEntity[]{null};
             }
@@ -246,13 +258,15 @@ public class HistoryRecordManager {
     public Single<List<StreamStateEntity>> loadStreamStateBatch(final List<InfoItem> infos) {
         return Single.fromCallable(() -> {
             final List<StreamStateEntity> result = new ArrayList<>(infos.size());
-            for (InfoItem info : infos) {
-                final List<StreamEntity> entities = streamTable.getStream(info.getServiceId(), info.getUrl()).blockingFirst();
+            for (final InfoItem info : infos) {
+                final List<StreamEntity> entities = streamTable
+                        .getStream(info.getServiceId(), info.getUrl()).blockingFirst();
                 if (entities.isEmpty()) {
                     result.add(null);
                     continue;
                 }
-                final List<StreamStateEntity> states = streamStateTable.getState(entities.get(0).getUid()).blockingFirst();
+                final List<StreamStateEntity> states = streamStateTable
+                        .getState(entities.get(0).getUid()).blockingFirst();
                 if (states.isEmpty()) {
                     result.add(null);
                     continue;
@@ -263,11 +277,12 @@ public class HistoryRecordManager {
         }).subscribeOn(Schedulers.io());
     }
 
-    public Single<List<StreamStateEntity>> loadLocalStreamStateBatch(final List<? extends LocalItem> items) {
+    public Single<List<StreamStateEntity>> loadLocalStreamStateBatch(
+            final List<? extends LocalItem> items) {
         return Single.fromCallable(() -> {
             final List<StreamStateEntity> result = new ArrayList<>(items.size());
-            for (LocalItem item : items) {
-                long streamId;
+            for (final LocalItem item : items) {
+                final long streamId;
                 if (item instanceof StreamStatisticsEntry) {
                     streamId = ((StreamStatisticsEntry) item).getStreamId();
                 } else if (item instanceof PlaylistStreamEntity) {
@@ -278,7 +293,8 @@ public class HistoryRecordManager {
                     result.add(null);
                     continue;
                 }
-                final List<StreamStateEntity> states = streamStateTable.getState(streamId).blockingFirst();
+                final List<StreamStateEntity> states = streamStateTable.getState(streamId)
+                        .blockingFirst();
                 if (states.isEmpty()) {
                     result.add(null);
                     continue;

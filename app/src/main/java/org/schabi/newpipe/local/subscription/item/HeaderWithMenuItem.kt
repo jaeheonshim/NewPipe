@@ -1,32 +1,30 @@
 package org.schabi.newpipe.local.subscription.item
 
-import android.view.View.*
+import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.header_with_menu_item.*
+import kotlinx.android.synthetic.main.header_with_menu_item.header_menu_item
+import kotlinx.android.synthetic.main.header_with_menu_item.header_title
 import org.schabi.newpipe.R
 
 class HeaderWithMenuItem(
-        val title: String,
-        @DrawableRes val itemIcon: Int = 0,
-        private val onClickListener: (() -> Unit)? = null,
-        private val menuItemOnClickListener: (() -> Unit)? = null
+    val title: String,
+    @DrawableRes val itemIcon: Int = 0,
+    var showMenuItem: Boolean = true,
+    private val onClickListener: (() -> Unit)? = null,
+    private val menuItemOnClickListener: (() -> Unit)? = null
 ) : Item() {
     companion object {
-        const val PAYLOAD_SHOW_MENU_ITEM = 1
-        const val PAYLOAD_HIDE_MENU_ITEM = 2
+        const val PAYLOAD_UPDATE_VISIBILITY_MENU_ITEM = 1
     }
 
     override fun getLayout(): Int = R.layout.header_with_menu_item
 
-
     override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.contains(PAYLOAD_SHOW_MENU_ITEM)) {
-            viewHolder.header_menu_item.visibility = VISIBLE
-            return
-        } else if (payloads.contains(PAYLOAD_HIDE_MENU_ITEM)) {
-            viewHolder.header_menu_item.visibility = GONE
+        if (payloads.contains(PAYLOAD_UPDATE_VISIBILITY_MENU_ITEM)) {
+            updateMenuItemVisibility(viewHolder)
             return
         }
 
@@ -44,5 +42,10 @@ class HeaderWithMenuItem(
         val menuItemListener: OnClickListener? =
                 menuItemOnClickListener?.let { OnClickListener { menuItemOnClickListener.invoke() } }
         viewHolder.header_menu_item.setOnClickListener(menuItemListener)
+        updateMenuItemVisibility(viewHolder)
+    }
+
+    private fun updateMenuItemVisibility(viewHolder: GroupieViewHolder) {
+        viewHolder.header_menu_item.isVisible = showMenuItem
     }
 }

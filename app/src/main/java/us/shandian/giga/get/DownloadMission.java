@@ -6,8 +6,8 @@ import android.system.ErrnoException;
 import android.system.OsConstants;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.schabi.newpipe.DownloaderImpl;
 
@@ -633,7 +633,7 @@ public class DownloadMission extends Mission {
         calculated = offsets[current < offsets.length ? current : (offsets.length - 1)] + length;
         calculated -= offsets[0];// don't count reserved space
 
-        return calculated > nearLength ? calculated : nearLength;
+        return Math.max(calculated, nearLength);
     }
 
     /**

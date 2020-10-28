@@ -7,10 +7,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.Fragment;
 
 import org.schabi.newpipe.streams.io.SharpStream;
 
@@ -314,6 +315,7 @@ public class StoredFileHelper implements Serializable {
             return false;
 
         if (this.isInvalid() || storage.isInvalid()) {
+            if (this.srcName == null || storage.srcName == null || this.srcType == null || storage.srcType == null) return false;
             return this.srcName.equalsIgnoreCase(storage.srcName) && this.srcType.equalsIgnoreCase(storage.srcType);
         }
 

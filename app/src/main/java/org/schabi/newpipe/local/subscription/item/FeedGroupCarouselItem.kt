@@ -6,9 +6,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.feed_item_carousel.*
+import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.feed_item_carousel.recycler_view
 import org.schabi.newpipe.R
 import org.schabi.newpipe.local.subscription.decoration.FeedGroupCarouselDecoration
 

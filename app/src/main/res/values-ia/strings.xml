@@ -22,18 +22,18 @@
     <string name="controls_popup_title">Emergente</string>
     <string name="controls_add_to_playlist_title">Adder a</string>
     <string name="download_path_title">Dossier de discarga de video</string>
-    <string name="download_path_dialog_title">Selige le dossier de discarga pro files de video</string>
+    <string name="download_path_dialog_title">Selige dossier de discarga pro files de video</string>
     <string name="download_path_audio_title">Dossier de discarga de audio</string>
     <string name="cancel">Cancellar</string>
     <string name="subscribe_button_title">Subscriber</string>
-    <string name="download_path_audio_dialog_title">Selige le dossier de discarga pro files de audio</string>
+    <string name="download_path_audio_dialog_title">Selige dossier de discarga pro files de audio</string>
     <string name="theme_title">Thema</string>
     <string name="show_comments_title">Monstrar le commentos</string>
     <string name="start_downloads">Initiar discargas</string>
     <string name="pause_downloads">Pausar le discargas</string>
     <string name="choose_instance_prompt">Seliger un instantia</string>
     <string name="error_connect_host">Non poteva connecter con le servitor</string>
-    <string name="view_count_text">%1$s vistas</string>
+    <string name="view_count_text">%1$s visualisationes</string>
     <string name="upload_date_text">Publicate le %1$s</string>
     <string name="controls_download_desc">Discargar le file de fluxo</string>
     <string name="screen_rotation">rotation</string>
@@ -53,7 +53,7 @@
     <string name="show_search_suggestions_title">Suggestiones de cerca</string>
     <string name="enable_search_history_title">Chronologia de cerca</string>
     <string name="enable_search_history_summary">Immagazinar le cercas localmente</string>
-    <string name="enable_watch_history_title">Historia de reproductiones</string>
+    <string name="enable_watch_history_title">Chronologia de reproductiones</string>
     <string name="enable_playback_resume_title">We</string>
     <string name="enable_playback_resume_summary">Restaurar le ultime position del reproduction</string>
     <string name="enable_playback_state_lists_title">Positiones in le listas</string>
@@ -63,10 +63,9 @@
     <string name="resume_on_audio_focus_gain_title">Reprender le reproduction</string>
     <string name="resume_on_audio_focus_gain_summary">Continuar le reproduction post interruptiones</string>
     <string name="download_dialog_title">Discargar</string>
-    <string name="next_video_title">Sequente</string>
     <string name="autoplay_title">Reproduction automatic</string>
     <string name="show_next_and_similar_title">Monstrar le videos sequente e simile</string>
-    <string name="url_not_supported_toast">URL non supportate</string>
+    <string name="unsupported_url">URL non supportate</string>
     <string name="default_content_country_title">Pais predefinite del contentos</string>
     <string name="service_title">Servicio</string>
     <string name="content_language_title">Lingua predefinite del contento</string>
@@ -78,7 +77,7 @@
     <string name="settings_category_player_title">Reproductor</string>
     <string name="settings_category_player_behavior_title">Comportamento</string>
     <string name="settings_category_video_audio_title">Video e audio</string>
-    <string name="settings_category_history_title">Historia e cache</string>
+    <string name="settings_category_history_title">Chronologia e cache</string>
     <string name="settings_category_popup_title">Emergente</string>
     <string name="settings_category_appearance_title">Apparentia</string>
     <string name="settings_category_other_title">Alteres</string>
@@ -86,7 +85,6 @@
     <string name="settings_category_updates_title">Actualisationes</string>
     <string name="background_player_playing_toast">Es reproduce in fundo</string>
     <string name="popup_playing_toast">Es reproduce in modo emergente</string>
-    <string name="play_btn_text">Reproducer</string>
     <string name="content">Contento</string>
     <string name="show_age_restricted_content_title">Contento restricte per etate</string>
     <string name="duration_live">In directe</string>
@@ -120,7 +118,7 @@
     <string name="switch_to_main">Cambia a Principal</string>
     <string name="clear_views_history_title">Vacuar le chronologia de reproductiones</string>
     <string name="videos_string">Videos</string>
-    <string name="clear_views_history_summary">Dele le chronologia del contenido reguardate e positiones de reproduction</string>
+    <string name="clear_views_history_summary">Dele le chronologia del contenido observate e positiones de reproduction</string>
     <string name="watch_history_states_deleted">Positiones de reproduction delite.</string>
     <string name="clear_search_history_title">Vacuar le chronologia de cerca</string>
     <string name="network_error">Error de rete</string>
@@ -167,10 +165,44 @@
     <string name="history_disabled">Le chronologia es disactivate</string>
     <string name="action_history">Chronologia</string>
     <string name="history_empty">Le chronologia es vacue</string>
-    <string name="history_cleared">Chronologia vacue</string>
+    <string name="history_cleared">Le chronologia esseva vacuate</string>
     <string name="title_last_played">Ultime reproductiones</string>
     <string name="title_most_played">Le plus reproducite</string>
     <string name="main_page_content">Contento del pagina principal</string>
     <string name="select_a_channel">Selige un canal</string>
     <string name="recaptcha_done_button">Preste</string>
+    <plurals name="videos">
+        <item quantity="one">%s video</item>
+        <item quantity="other">%s videos</item>
+    </plurals>
+    <string name="systems_language">Predefinite del systema</string>
+    <string name="app_language_title">Lingua del application</string>
+    <string name="feed_update_threshold_option_always_update">Actualisar sempre</string>
+    <string name="app_update_notification_content_title">Il ha un actualisation de NewPipe disponibile!</string>
+    <string name="updates_setting_description">Monstrar un notification pro requestar le actualisation del application quando un nove version es disponibile</string>
+    <string name="updates_setting_title">Actualisationes</string>
+    <string name="open_in_popup_mode">Aperir in modo emergente</string>
+    <string name="confirm_prompt">Esque tu vole vacuar le chronologia de discargamentos o deler omne files discargate\?</string>
+    <string name="clear_download_history">Vacuar le chronologia de discargamentos</string>
+    <string name="delete_item_search_history">Esque tu vole deler iste articulo del chronologia de cerca\?</string>
+    <string name="delete_stream_history_prompt">Esque tu vole deler iste articulo del chronologia de reproductiones\?</string>
+    <string name="delete_all_history_prompt">Secur que tu vole deler omne articulos ab le chronologia de cerca\?</string>
+    <string name="title_activity_history">Chronologia</string>
+    <string name="clear_search_history_summary">Dele le chronologia de parolas clave de cerca</string>
+    <string name="delete_search_history_alert">Deler omne chronologia de cerca\?</string>
+    <string name="search_history_deleted">Chronologia de cerca delite.</string>
+    <string name="export_data_summary">Exportar le chronologia, subscriptiones e listas de reproduction</string>
+    <string name="import_data_summary">Reimplaciar tu chronologia e subscriptiones currente</string>
+    <string name="remove_watched_popup_warning">Le videos jam observate ante e post de esser addite al lista de reproduction essera removite.
+\nSecur que tu vole\? Isto non pote disfacer se!</string>
+    <string name="remove_watched_popup_yes_and_partially_watched_videos">Si, e le videos partialmente observate</string>
+    <string name="remove_watched_popup_title">Deler le videos observate\?</string>
+    <string name="remove_watched">Deler le videos observate</string>
+    <plurals name="watching">
+        <item quantity="one">%s observante</item>
+        <item quantity="other">%s observante</item>
+    </plurals>
+    <string name="no_one_watching">Nemo is observante</string>
+    <string name="watch_history_deleted">Chronologia de reproductiones vacuate.</string>
+    <string name="delete_view_history_alert">Deler omne chronologia de reproductiones\?</string>
 </resources>

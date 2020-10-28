@@ -22,14 +22,30 @@ package org.schabi.newpipe.local.feed
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import icepick.State
-import kotlinx.android.synthetic.main.error_retry.*
-import kotlinx.android.synthetic.main.fragment_feed.*
+import java.util.Calendar
+import kotlinx.android.synthetic.main.error_retry.error_button_retry
+import kotlinx.android.synthetic.main.error_retry.error_message_view
+import kotlinx.android.synthetic.main.fragment_feed.empty_state_view
+import kotlinx.android.synthetic.main.fragment_feed.error_panel
+import kotlinx.android.synthetic.main.fragment_feed.items_list
+import kotlinx.android.synthetic.main.fragment_feed.loading_progress_bar
+import kotlinx.android.synthetic.main.fragment_feed.loading_progress_text
+import kotlinx.android.synthetic.main.fragment_feed.refresh_root_view
+import kotlinx.android.synthetic.main.fragment_feed.refresh_subtitle_text
+import kotlinx.android.synthetic.main.fragment_feed.refresh_text
 import org.schabi.newpipe.R
 import org.schabi.newpipe.database.feed.model.FeedGroupEntity
 import org.schabi.newpipe.fragments.list.BaseListFragment
@@ -37,11 +53,12 @@ import org.schabi.newpipe.local.feed.service.FeedLoadService
 import org.schabi.newpipe.report.UserAction
 import org.schabi.newpipe.util.AnimationUtils.animateView
 import org.schabi.newpipe.util.Localization
-import java.util.*
 
 class FeedFragment : BaseListFragment<FeedState, Unit>() {
     private lateinit var viewModel: FeedViewModel
-    @State @JvmField var listState: Parcelable? = null
+    @State
+    @JvmField
+    var listState: Parcelable? = null
 
     private var groupId = FeedGroupEntity.GROUP_ALL_ID
     private var groupName = ""
@@ -49,13 +66,14 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
 
     init {
         setHasOptionsMenu(true)
-        useDefaultStateSaving(false)
+        setUseDefaultStateSaving(false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        groupId = arguments?.getLong(KEY_GROUP_ID, FeedGroupEntity.GROUP_ALL_ID) ?: FeedGroupEntity.GROUP_ALL_ID
+        groupId = arguments?.getLong(KEY_GROUP_ID, FeedGroupEntity.GROUP_ALL_ID)
+                ?: FeedGroupEntity.GROUP_ALL_ID
         groupName = arguments?.getString(KEY_GROUP_NAME) ?: ""
     }
 
@@ -66,7 +84,7 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(rootView, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, FeedViewModel.Factory(requireContext(), groupId)).get(FeedViewModel::class.java)
+        viewModel = ViewModelProvider(this, FeedViewModel.Factory(requireContext(), groupId)).get(FeedViewModel::class.java)
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer { it?.let(::handleResult) })
     }
 
@@ -95,9 +113,9 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Menu
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -107,7 +125,7 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
         inflater.inflate(R.menu.menu_feed_fragment, menu)
 
         if (useAsFrontPage) {
-            menu.findItem(R.id.menu_item_feed_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            menu.findItem(R.id.menu_item_feed_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
         }
     }
 
@@ -147,9 +165,9 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
         activity?.supportActionBar?.subtitle = null
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Handling
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
 
     override fun showLoading() {
         animateView(refresh_root_view, false, 0)
@@ -237,11 +255,9 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
 
         oldestSubscriptionUpdate = loadedState.oldestUpdate
 
+        refresh_subtitle_text.isVisible = loadedState.notLoadedCount > 0
         if (loadedState.notLoadedCount > 0) {
-            refresh_subtitle_text.visibility = View.VISIBLE
             refresh_subtitle_text.text = getString(R.string.feed_subscription_not_loaded_count, loadedState.notLoadedCount)
-        } else {
-            refresh_subtitle_text.visibility = View.GONE
         }
 
         if (loadedState.itemsErrors.isNotEmpty()) {
@@ -255,7 +271,6 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
             hideLoading()
         }
     }
-
 
     private fun handleErrorState(errorState: FeedState.ErrorState): Boolean {
         hideLoading()
@@ -280,9 +295,9 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
         refresh_text?.text = getString(R.string.feed_oldest_subscription_update, oldestSubscriptionUpdateText)
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Load Service Handling
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
 
     override fun doInitialLoadLogic() {}
     override fun reloadContent() = triggerUpdate()
@@ -315,12 +330,7 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
         @JvmStatic
         fun newInstance(groupId: Long = FeedGroupEntity.GROUP_ALL_ID, groupName: String? = null): FeedFragment {
             val feedFragment = FeedFragment()
-
-            feedFragment.arguments = Bundle().apply {
-                putLong(KEY_GROUP_ID, groupId)
-                putString(KEY_GROUP_NAME, groupName)
-            }
-
+            feedFragment.arguments = bundleOf(KEY_GROUP_ID to groupId, KEY_GROUP_NAME to groupName)
             return feedFragment
         }
     }
